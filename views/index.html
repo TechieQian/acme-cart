@@ -1,0 +1,75 @@
+<html>
+  <head>
+    <link href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <!-- Custom styles for this template -->
+    <link href="/stylesheets/style.css" rel="stylesheet">
+  </head>
+  <body>
+    <div class='container'>
+      <h1> Acme Carts </h1>
+      <div id='productList' class='col-sm-8'>
+        <h3> Product </h3>
+        <ul class='list-group'>
+          {% for product in products %}
+            <li class='list-group-item'>
+              <form action='/{{product.id}}/lineItems' method='POST'>
+                {{product.name}}
+                <input type='submit' id=addToCart class='btn-primary btn' value='Add to cart'>
+              </form>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div id='cart' class='col-sm-4'>
+        {% if activeOrder %}
+        <h3> Your cart </h3>
+        {% if ex %}
+        <div class='well'>
+          Address is required
+        </div>
+        {% endif %}
+        <div class='well'>
+          <ul class='list-group'>
+            {% for lineItem in lineItems %}
+              <li class='list-group-item'>
+                <form action='/{{activeOrder.id}}/lineItems/{{lineItem.id}}?_method=DELETE' method='POST'>
+                  {{lineItem.product.name}}
+                  <span class='label label-default pull-right'>{{lineItem.quantity}}</span>
+                  <br>
+                  <input type='submit' class='btn-warning btn' value='Remove from cart'>
+                </form>
+              </li>
+            {% endfor %}
+            <form action='/{{activeOrder.id}}?_method=PUT' method='POST'>
+              <div class='form-group'>
+                <label>Address</label>
+                <input class='form-control' name='address'>
+              </div>
+              <input type='submit' class='btn-primary btn' value='Place order'>
+            </form>
+          </ul>
+        </div>
+        {% endif %}
+      </div>
+      <div id='pastOrders' class='col-sm-8'>
+        <h3> Your orders </h3>
+        <ul class='list-group'>
+          {% for order in orders %}
+          <li class='list-group-item'>
+            Order {{order.id}} : {{order.address}}
+            <ul class='list-group'>
+              {% for line in order.lineitems %}
+                <li class='list-group-item'>
+                  {{line.product.name}}
+                  <span class='label label-default pull-right'>{{line.quantity}}</span>
+                </li>
+              {% endfor %}
+            </ul>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </body>
+</html>
