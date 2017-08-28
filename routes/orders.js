@@ -1,10 +1,8 @@
 const db = require('../db/index')
 const { Order } = db.models
 const app = require('express').Router();
-console.log('order is', Order)
 
 module.exports = app;
-
 
 app.get('/', (req, res, next)=> {
   db.viewModel()
